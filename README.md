@@ -1,3 +1,4 @@
+```
 portfolio-lib/
 ├── assets/                        # Asset-related classes
 │   ├── asset.py                   # Asset class
@@ -26,7 +27,7 @@ portfolio-lib/
 │   │   ├── test_value_at_risk.py
 │   │   └── ...
 │   ├── test_optimization/
-│   │   ├── test_mean_variance.py
+│   │   ├── test_mean_variance.py```
 │   │   └── ...
 │   └── ...
 ├── README.md                      # Project overview and documentation
