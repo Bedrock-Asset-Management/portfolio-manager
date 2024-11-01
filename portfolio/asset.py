@@ -1,26 +1,26 @@
 import numpy as np
 
 class Asset:
-    def __init__(self, name, prices):
+    def __init__(self, symbol, prices):
         """
         Initialise un actif avec un nom et une liste de prix.
 
-        :param name: Nom de l'actif (str)
+        :param symbol: Nom de l'actif (str)
         :param prices: Prix de l'actif (array 1D)
         """
-        self.name = name
+        self.symbol = symbol
         self.prices = np.array(prices)
-        self.returns = self.calculate_log_returns()
-
-    def calculate_log_returns(self):
+        self.returns = self.calculate_returns()
+        self.volatility = self.calculate_volatility()
+    
+    def calculate_returns(self):
         """
-        Calcule les rendements logarithmiques de l'actif.
-
-        :return: Rendements logarithmiques (array 1D)
+        Calculate logarithmic returns of the asset from prices.
         """
         return np.log(self.prices[1:] / self.prices[:-1])
+    
 
-    def volatility(self):
+    def calculate_volatility(self):
         """
         Calcule la volatilité de l'actif.
 
@@ -29,4 +29,4 @@ class Asset:
         return np.std(self.returns)
 
     def __repr__(self):
-        return f"Asset(name={self.name}, volatility={self.volatility():.2%})"
+        return f"Asset(name={self.symbol}, volatility={self.volatility:.2%})"
