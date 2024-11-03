@@ -1,5 +1,9 @@
 import numpy as np
 import math
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+
 
 class Portfolio:
     def __init__(self, assets, weights, name):
@@ -21,9 +25,18 @@ class Portfolio:
         self.name = name
         self.assets = assets
         self.weights = np.array(weights)
-        self.prices = sum(asset.prices * weight for asset, weight in zip(self.assets, self.weights))
+        self.prices = self.calculate_prices()
         self.returns = self.calculate_returns()
 
+    def calculate_prices(self):
+        """
+        Calculate the weighted sum of asset prices.
+        
+        Returns:
+        - The portfolio's calculated prices as a weighted sum.
+        """
+        return sum(asset.prices * weight for asset, weight in zip(self.assets, self.weights))
+    
     def calculate_returns(self):
         """
         Calculate the log returns for the portfolio based on price changes.
@@ -52,9 +65,11 @@ class Portfolio:
         """
         returns_matrix = np.array([asset.returns for asset in self.assets])
         covariance_matrix = np.cov(returns_matrix)
+        sns.heatmap(pd.DataFrame(covariance_matrix))
+        plt.show()
         return np.dot(self.weights.T, np.dot(covariance_matrix * 252, self.weights))
 
-    def optimize_weights(self, model):
+    def optimize_weights(self, model, target_return=None):
         """
         Optimize the weights of assets in the portfolio based on a given model.
         
@@ -62,7 +77,10 @@ class Portfolio:
         - model: Optimization model object with an `optimize` method, which updates weights
           to achieve a certain goal (e.g., maximize returns or minimize risk).
         """
-        self.weights = model.optimize(self.assets, self.weights)
+        self.weights = model.optimize(self.assets, self.weights, target_return)
+        # Recalculate prices and returns with new weights
+        self.prices = self.calculate_prices()
+        self.returns = self.calculate_returns()
 
     def __repr__(self):
         """
