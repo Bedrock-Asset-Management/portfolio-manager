@@ -1,32 +1,48 @@
 import numpy as np
 
 class Asset:
-    def __init__(self, symbol, prices):
+    def __init__(self, ticker, prices):
         """
-        Initialise un actif avec un nom et une liste de prix.
+        Initializes an asset with a name and a list of prices.
 
-        :param symbol: Nom de l'actif (str)
-        :param prices: Prix de l'actif (array 1D)
+        Attributes:
+        - ticker: String representing the name of the asset
+        - prices: Numpy 1D array of historical prices for the asset
+        - returns: Numpy array of logarithmic returns
+        - volatility: Standard deviation of returns
+        
+        Parameters:
+        - ticker: Name (ticker) of the asset
+        - prices: Historical prices of the asset
         """
-        self.symbol = symbol
+        self.ticker = ticker
         self.prices = np.array(prices)
         self.returns = self.calculate_returns()
         self.volatility = self.calculate_volatility()
     
     def calculate_returns(self):
         """
-        Calculate logarithmic returns of the asset from prices.
+        Calculate logarithmic returns of the asset from prices
+
+        Returns:
+        - Numpy Array of logarithmic returns
         """
         return np.log(self.prices[1:] / self.prices[:-1])
     
-
     def calculate_volatility(self):
         """
-        Calcule la volatilité de l'actif.
+        Calculate the volatility of the asset based on the standard deviation of returns
 
-        :return: Volatilité (float)
+        Returns:
+        - Volatility of the asset
         """
         return np.std(self.returns)
 
     def __repr__(self):
-        return f"Asset(name={self.symbol}, volatility={self.volatility:.2%})"
+        """
+        String representation of the Asset object
+
+        Returns:
+        - A string showing the asset's name and volatility in percentage format
+        """
+        return f"Asset(name={self.ticker}, volatility={self.volatility:.2%})"
