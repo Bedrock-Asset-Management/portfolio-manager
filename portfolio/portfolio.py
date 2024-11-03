@@ -1,9 +1,5 @@
 import numpy as np
 import math
-import seaborn as sns
-import pandas as pd
-import matplotlib.pyplot as plt
-
 
 class Portfolio:
     def __init__(self, assets, weights, name):
@@ -65,8 +61,6 @@ class Portfolio:
         """
         returns_matrix = np.array([asset.returns for asset in self.assets])
         covariance_matrix = np.cov(returns_matrix)
-        sns.heatmap(pd.DataFrame(covariance_matrix))
-        plt.show()
         return np.dot(self.weights.T, np.dot(covariance_matrix * 252, self.weights))
 
     def optimize_weights(self, model, target_return=None):
@@ -90,3 +84,4 @@ class Portfolio:
         - A string summarizing the portfolio's name, expected return, and volatility.
         """
         return f"Portfolio(name={self.name}, Return ={self.calculate_expected_return():.2%}, Volatility ={math.sqrt(self.calculate_variance()):.2%})"
+    
