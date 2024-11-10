@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
-from portfolio.portfolio import Portfolio
+from entities.portfolio import Portfolio
 
 class MPTModel:
     def __init__(self):
