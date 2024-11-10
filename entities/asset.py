@@ -1,48 +1,49 @@
+from dataclasses import dataclass
 import numpy as np
+import yfinance as yf
+from typing import Optional, Union, List
+from datetime import datetime, timedelta
 
+@dataclass(frozen=True)
 class Asset:
-    def __init__(self, ticker, prices):
-        """
-        Initializes an asset with a name and a list of prices.
+    ticker: str
+    prices: np.ndarray
+    returns: np.ndarray
+    volatility: float
 
-        Attributes:
-        - ticker: String representing the name of the asset
-        - prices: Numpy 1D array of historical prices for the asset
-        - returns: Numpy array of logarithmic returns
-        - volatility: Standard deviation of returns
-        
-        Parameters:
-        - ticker: Name (ticker) of the asset
-        - prices: Historical prices of the asset
+    @classmethod
+    def from_ticker(cls, ticker: str, period: str = "1y") -> "Asset":
         """
-        self.ticker = ticker
-        self.prices = np.array(prices)
-        self.returns = self.calculate_returns()
-        self.volatility = self.calculate_volatility()
+        Create an Asset instance by fetching data from Yahoo Finance.
+
+        Args:
+            ticker: Stock symbol (e.g., 'AAPL')
+            period: Time period for historical data (e.g., '1d', '5d', '1mo', '1y')
+
+        Returns:
+            Asset: New Asset instance with fetched data
+
+        Raises:
+            ValueError: If ticker is invalid or data fetch fails
+        """
+        try:
+            yf_ticker = yf.Ticker(ticker)
+            hist = yf_ticker.history(period=period)
+            
+            if (hist.empty):
+                raise ValueError(f"No data found for ticker {ticker}")
+            
+            prices = hist['Close'].values
+            return Asset(
+                ticker=ticker,
+                prices=prices,
+                returns=np.log(prices[1:] / prices[:-1]),
+                volatility=np.std(np.log(prices[1:] / prices[:-1]))
+            )
+        except Exception as e:
+            raise ValueError(f"Error fetching data for {ticker}: {str(e)}")
     
-    def calculate_returns(self):
-        """
-        Calculate logarithmic returns of the asset from prices
 
-        Returns:
-        - Numpy Array of logarithmic returns
-        """
-        return np.log(self.prices[1:] / self.prices[:-1])
-    
-    def calculate_volatility(self):
-        """
-        Calculate the volatility of the asset based on the standard deviation of returns
-
-        Returns:
-        - Volatility of the asset
-        """
-        return np.std(self.returns)
-
-    def __repr__(self):
-        """
-        String representation of the Asset object
-
-        Returns:
-        - A string showing the asset's name and volatility in percentage format
-        """
-        return f"Asset(name={self.ticker}, volatility={self.volatility:.2%})"
+    def __repr__(self) -> str:
+        """String representation showing ticker and volatility"""
+        return f"Asset(ticker={self.ticker!r}, volatility={self.volatility:.2%})"
