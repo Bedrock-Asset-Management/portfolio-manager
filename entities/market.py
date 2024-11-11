@@ -10,7 +10,7 @@ class MarketObserver(Protocol):
         pass
 
 class Market:
-    def __init__(self, tickers: List[str], index_symbol: str, time_range: str = "1y"):
+    def __init__(self, tickers: List[str], index_symbol: str, time_range: str = 'ytd'):
         """Initialize market with given tickers and optional benchmark
         
         Args:
