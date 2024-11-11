@@ -9,7 +9,7 @@ class MarketObserver(Protocol):
     def update(self, market_data: Dict) -> None: ...
 
 class Market:
-    def __init__(self, benchmark_symbol: str = "SPY"):
+    def __init__(self, benchmark_symbol: str = "^GSPC"):
         self._subscribers: List[MarketObserver] = []
         self._assets: Dict[str, Asset] = {}
         self._market_data: Dict[str, Dict] = {}
@@ -44,7 +44,7 @@ class Market:
         """Update specific asset with fresh data"""
         if symbol not in self._assets:
             raise KeyError(f"Asset {symbol} not in market")
-        
+    
         try:
             updated_asset = Asset.from_ticker(symbol, period)
             self._assets[symbol] = updated_asset
@@ -57,7 +57,7 @@ class Market:
         for symbol in self._assets:
             try:
                 self.update_asset(symbol, period)
-            except Exception as e:
+            except Exception as e: # REDONANT ?
                 print(f"Error updating {symbol}: {e}")
 
     def add_asset(self, asset: Asset) -> None:
