@@ -49,16 +49,16 @@ class Portfolio(MarketObserver):
         return excess_returns / self.volatility if self.volatility != 0 else 0
 
     def _calculate_beta(self) -> float:
-        """Calculate portfolio beta relative to market benchmark
+        """Calculate portfolio beta relative to market index 
         
         Beta = Cov(Portfolio Returns, Market Returns) / Var(Market Returns)
         """
-        benchmark_returns = self.market.get_benchmark_returns()
+        index_returns = self.market.index.returns
         
         # Calculate beta
-        market_var = self.benchmark.volatility ** 2
+        market_var = self.market.index.volatility ** 2
         if market_var == 0:
             raise ValueError("Market variance is zero")
             
-        covariance = np.cov(self.returns, benchmark_returns)[0, 1]
+        covariance = np.cov(self.returns, index_returns)[0, 1]
         return covariance / market_var
