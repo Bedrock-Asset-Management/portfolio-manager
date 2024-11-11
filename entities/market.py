@@ -1,9 +1,8 @@
-from asset import Asset
 import numpy as np
 from types import MappingProxyType
 from typing import Dict, List, Optional, Protocol
 from datetime import datetime
-import logging
+from entities.asset import Asset
 
 class MarketObserver(Protocol):
     """Protocol for objects that can receive market updates"""

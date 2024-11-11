@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 import numpy as np
 import yfinance as yf
-from typing import Optional, Union, List
-from datetime import datetime, timedelta
 
 @dataclass(frozen=True)
 class Asset:

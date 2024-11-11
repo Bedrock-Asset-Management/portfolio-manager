@@ -1,7 +1,7 @@
-from market import Market, MarketObserver
 from typing import Dict, List
 from dataclasses import dataclass
 import numpy as np
+from entities.market import Market, MarketObserver
 
 @dataclass
 class Portfolio(MarketObserver):
