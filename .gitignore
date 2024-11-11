@@ -1,1 +1,7 @@
 .vscode/settings.json
+entities/__pycache__/__init__.cpython-310.pyc
+entities/__pycache__/asset.cpython-310.pyc
+entities/__pycache__/market.cpython-310.pyc
+entities/__pycache__/portfolio.cpython-310.pyc
+models/__pycache__/__init__.cpython-310.pyc
+models/__pycache__/mpt.cpython-310.pyc
