@@ -10,6 +10,7 @@ class Asset:
     ticker: str
     prices: np.ndarray 
     returns: np.ndarray
+    expected_return: float
     volatility: float
 
     @classmethod
@@ -25,11 +26,12 @@ class Asset:
             
             prices = hist['Close'].values
             returns = np.log(prices[1:] / prices[:-1])
-            
+            expected_return = np.mean(returns)
             return cls(
                 ticker=ticker,
                 prices=prices,
-                returns=returns, 
+                returns=returns,
+                expected_return=expected_return,
                 volatility=np.std(returns)
             )
         except Exception as e:
