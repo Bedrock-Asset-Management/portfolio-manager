@@ -35,18 +35,26 @@ class Portfolio(MarketObserver):
         self.prices: np.ndarray = self._calculate_portfolio_prices()
         self.returns: np.ndarray = np.log(self.prices[1:] / self.prices[:-1]) # Log returns
         self.volatility: float = np.std(self.returns) * np.sqrt(252)  # Annualized
+        self.expected_return: float = np.mean(self.returns) * 252  # Annualized
+        self.risk_premium: float = self.expected_return - self.risk_free_rate
         self.beta: float = self._calculate_beta()
         self.sharpe: float = self._calculate_sharpe()
+        self.treynor: float = self._calculate_treynor()
     
     def _calculate_portfolio_prices(self) -> np.ndarray:
         """Calculate weighted sum of asset returns using market data"""
         return np.dot(self.weights, [self.market.get_asset(symbol).prices for symbol in self.asset_symbols])
     
-    
     def _calculate_sharpe(self) -> float:
-        """Calculate portfolio Sharpe ratio"""
-        excess_returns = np.mean(self.returns) * 252 - self.risk_free_rate
-        return excess_returns / self.volatility if self.volatility != 0 else 0
+        """
+        Calculate portfolio Sharpe ratio
+        
+        Raises:
+            ValueError: If portfolio volatility is zero
+        """
+        if self.volatility == 0:
+            raise ValueError("Portfolio volatility is zero")
+        return self.risk_premium / self.volatility
 
     def _calculate_beta(self) -> float:
         """Calculate portfolio beta relative to market index 
@@ -62,3 +70,17 @@ class Portfolio(MarketObserver):
             
         covariance = np.cov(self.returns, index_returns)[0, 1]
         return covariance / market_var
+    
+    def _calculate_treynor(self) -> float:
+        """
+        Calculate portfolio Treynor ratio
+        
+        Raises:
+            ValueError: If portfolio beta is zero
+        """
+        if self.beta == 0:
+            raise ValueError("Portfolio beta is zero") 
+        return self.risk_premium / self.beta
+    
+    def __repr__(self) -> str:
+        return f"Portfolio(name={self.name!r}, volatility={self.volatility:.2%}, expected_return={self.expected_return:.2%}, beta={self.beta:.2f}, sharpe={self.sharpe:.2f}, treynor={self.treynor:.2f})"
