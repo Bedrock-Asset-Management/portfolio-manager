@@ -8,6 +8,7 @@ from typing import Optional
 class Asset:
     # Define required fields
     ticker: str
+    sector: str
     prices: np.ndarray 
     returns: np.ndarray
     expected_return: float
@@ -24,11 +25,14 @@ class Asset:
             if hist.empty:
                 raise ValueError(f"No data found for ticker {ticker}")
             
+            sector = yf_ticker.info.get("sector")
+
             prices = hist['Close'].values
             returns = np.log(prices[1:] / prices[:-1])
             expected_return = np.mean(returns)
             return cls(
                 ticker=ticker,
+                sector=sector,
                 prices=prices,
                 returns=returns,
                 expected_return=expected_return,
